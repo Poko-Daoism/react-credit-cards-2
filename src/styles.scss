@@ -19,7 +19,14 @@ $rccs-shadow: 0 0 20px rgba(#000, 0.2) !default;
 $rccs-light-text-color: #fff !default;
 $rccs-dark-text-color: #555 !default;
 $rccs-stripe-bg-color: #2a1d16 !default;
-$rccs-signature-background: repeating-linear-gradient(0.1deg, #fff 20%, #fff 40%, #fea 40%, #fea 44%, #fff 44%) !default;
+$rccs-signature-background: repeating-linear-gradient(
+  0.1deg,
+  #fff 20%,
+  #fff 40%,
+  #fea 40%,
+  #fea 44%,
+  #fff 44%
+) !default;
 
 $rccs-default-background: linear-gradient(25deg, #939393, #717171) !default;
 $rccs-unknown-background: linear-gradient(25deg, #999, #999) !default;
@@ -28,7 +35,11 @@ $rccs-background-transition: all 0.5s ease-out !default;
 $rccs-animate-background: true;
 
 /** ISSUERS **/
-$rccs-american-express-background: linear-gradient(25deg, #308c67, #a3f2cf) !default;
+$rccs-american-express-background: linear-gradient(
+  25deg,
+  #308c67,
+  #a3f2cf
+) !default;
 $rccs-dankort-background: linear-gradient(25deg, #ccc, #999) !default;
 $rccs-diners-club-background: linear-gradient(25deg, #fff, #eee) !default;
 $rccs-discover-background: linear-gradient(25deg, #fff, #eee) !default;
@@ -310,6 +321,16 @@ $rccs-visa-electron-logo: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiB
     &.rccs__number--large {
       font-size: $rccs-number-font-size * 0.85;
     }
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__copy_card_number {
+    &:hover {
+      cursor: pointer;
+      background-color: #f5f5f5;
+    }
   }
 
   &__name {
@@ -345,6 +366,9 @@ $rccs-visa-electron-logo: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiB
     &__value {
       font-family: $rccs-expiry-font-family;
       font-size: $rccs-expiry-font-size;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
     }
   }
 
@@ -400,10 +424,13 @@ $rccs-visa-electron-logo: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiB
     color: $rccs-cvc-color;
     font-family: $rccs-cvc-font-family;
     font-size: $rccs-cvc-font-size;
-    left: 67%;
+    left: 65%;
     line-height: 1;
     position: absolute;
     top: 42%;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
 
   &__cvc__front {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import {
   cardTypesMap,
@@ -6,6 +6,8 @@ import {
   setInitialValidCardTypes,
   validateLuhn,
 } from "./utils/cardHelpers";
+
+import { CopyOutline } from "./components/Copy";
 
 export interface CallbackArgument {
   issuer: string;
@@ -26,6 +28,12 @@ export interface ReactCreditCardsProps {
   number: string | number;
   placeholders?: { name: string } | undefined;
   preview?: boolean | undefined;
+  onToastMessage?: (message: string) => void;
+  message?: {
+    cardNumberCopiedMessage: string;
+    cardExpiryCopiedMessage: string;
+    cardCvcCopiedMessage: string;
+  };
 }
 
 export function ReactCreditCards(props: ReactCreditCardsProps) {
@@ -45,6 +53,8 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
       name: "YOUR NAME HERE",
     },
     callback,
+    onToastMessage,
+    message,
   } = props;
 
   const [cardTypes, setCardTypes] = React.useState(setInitialValidCardTypes());
@@ -188,6 +198,56 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
     [cardTypes]
   );
 
+  const copyValue = useCallback((value: string) => {
+    // copy card number to clipboard
+    const el = document.createElement("textarea");
+    el.value = value;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  }, []);
+
+  const showSuccessToast = useCallback(
+    (message?: string) => {
+      if (message) onToastMessage?.(message);
+    },
+    [onToastMessage]
+  );
+
+  const onCardNumberCopyClicked = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      copyValue(cardNumber);
+
+      e.stopPropagation();
+
+      showSuccessToast(message?.cardNumberCopiedMessage);
+    },
+    [cardNumber, copyValue, message?.cardNumberCopiedMessage, showSuccessToast]
+  );
+
+  const onExpiryCopyClicked = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      copyValue(cardExpiry);
+
+      e.stopPropagation();
+
+      showSuccessToast(message?.cardExpiryCopiedMessage);
+    },
+    [cardExpiry, copyValue, message?.cardExpiryCopiedMessage, showSuccessToast]
+  );
+
+  const onCvcCopyClicked = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      copyValue(cvc.toString());
+
+      e.stopPropagation();
+
+      showSuccessToast(message?.cardCvcCopiedMessage);
+    },
+    [copyValue, cvc, showSuccessToast, message?.cardCvcCopiedMessage]
+  );
+
   React.useEffect(() => {
     if (cardNumber !== number) {
       /* istanbul ignore else */
@@ -209,6 +269,18 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
     number,
     cardTypes,
   ]);
+
+  const shouldCursorPointer = useCallback((pointer: boolean) => {
+    return {
+      cursor: pointer ? "pointer" : "default",
+    };
+  }, []);
+
+  const canCopyCardExpiry = !!cardExpiry.match(/^[0-9/]{5}$/);
+  const canCopyCardCvc = Number.isInteger(Number(cvc));
+  const canCopyCardNumber = !!(
+    cardNumber.replace(/ /g, "").length === Number(number).toString().length
+  );
 
   return (
     <div key="Cards" className="rccs">
@@ -236,7 +308,7 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
           >
             {cvc}
           </div>
-          <div
+          <button
             className={[
               "rccs__number",
               cardNumber.replace(/ /g, "").length > 16
@@ -247,9 +319,17 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
             ]
               .join(" ")
               .trim()}
+            onClick={canCopyCardNumber ? onCardNumberCopyClicked : undefined}
+            style={shouldCursorPointer(canCopyCardNumber)}
           >
             {cardNumber}
-          </div>
+
+            {canCopyCardNumber && (
+              <span className={["rccs__copy_card_number"].join(" ").trim()}>
+                <CopyOutline style={{ width: 14, height: 14 }} />
+              </span>
+            )}
+          </button>
           <div
             className={[
               "rccs__name",
@@ -258,6 +338,9 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
             ]
               .join(" ")
               .trim()}
+            style={{
+              cursor: canCopyCardNumber ? "pointer" : "default",
+            }}
           >
             {name || placeholders.name}
           </div>
@@ -271,7 +354,19 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
               .trim()}
           >
             <div className="rccs__expiry__valid">{locale.valid}</div>
-            <div className="rccs__expiry__value">{cardExpiry}</div>
+            <button
+              className="rccs__expiry__value"
+              onClick={canCopyCardExpiry ? onExpiryCopyClicked : undefined}
+              style={shouldCursorPointer(canCopyCardExpiry)}
+            >
+              {cardExpiry}
+              {/* Copy */}
+              {canCopyCardExpiry && (
+                <span className="rccs__copy_expiry">
+                  <CopyOutline style={{ width: 14, height: 14 }} />
+                </span>
+              )}
+            </button>
           </div>
           <div className="rccs__chip" />
         </div>
@@ -279,13 +374,21 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
           <div className="rccs__card__background" />
           <div className="rccs__stripe" />
           <div className="rccs__signature" />
-          <div
+          <button
             className={["rccs__cvc", focused === "cvc" ? "rccs--focused" : ""]
               .join(" ")
               .trim()}
+            onClick={canCopyCardCvc ? onCvcCopyClicked : undefined}
+            style={shouldCursorPointer(canCopyCardCvc)}
           >
             {cvc}
-          </div>
+
+            {canCopyCardCvc && (
+              <span className="rccs__copy_cvc">
+                <CopyOutline />
+              </span>
+            )}
+          </button>
           <div className="rccs__issuer" />
         </div>
       </div>
