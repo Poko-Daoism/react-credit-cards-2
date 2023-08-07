@@ -385,7 +385,12 @@ export function ReactCreditCards(props: ReactCreditCardsProps) {
 
             {canCopyCardCvc && (
               <span className="rccs__copy_cvc">
-                <CopyOutline />
+                <CopyOutline
+                  style={{
+                    width: 14,
+                    height: 14,
+                  }}
+                />
               </span>
             )}
           </button>
