@@ -125,7 +125,8 @@
     "test:watch": "jest --watch",
     "size": "npm run build && size-limit",
     "validate": "npm run lint && npm run lint:styles && npm run test:coverage && npm run size",
-    "prepublishOnly": "npm run validate"
+    "prepublishOnly": "npm run validate",
+    "postinstall": "npm run build"
   },
   "browserslist": [
     "> 0.2%",
