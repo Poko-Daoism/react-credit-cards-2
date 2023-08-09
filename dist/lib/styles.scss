@@ -333,6 +333,11 @@ $rccs-visa-electron-logo: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiB
     }
   }
 
+  &__copy_cvc {
+    width: 14px;
+    height: 14px;
+  }
+
   &__name {
     bottom: 15%;
     font-family: $rccs-name-font-family;
