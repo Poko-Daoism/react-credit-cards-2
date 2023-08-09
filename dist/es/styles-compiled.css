@@ -176,6 +176,10 @@
   cursor: pointer;
   background-color: #f5f5f5;
 }
+.rccs__copy_cvc {
+  width: 14px;
+  height: 14px;
+}
 .rccs__name {
   bottom: 15%;
   font-family: "Consolas", "Courier", monospace;
